@@ -3,19 +3,23 @@ import React, { useEffect, useState } from "react";
 import './../styles/App.css';
 
 const App = () => {
-  const [data,setData] = useState([]);
+  const [data,setData] = useState(null);
+  const [loading,setLoading] = useState(true);
+  const [error,setError] = useState("")
   useEffect(()=>{
-    fetch("https://dummyjson.com/products").then(resp=>resp.json()).then(val=>setData(val.products))
+    fetch("https://dummyjson.com/products").then(resp=>resp.json()).then(val=>setData(val.products)).catch((e)=>setError(e.message)).finally(()=>setLoading(false))
   },[])
-  console.log(data)
-  if(data.length<1){
-    return <div>Loading....</div>
-  }
+ 
   return (
     <div>
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {data && <div>
       <h1>Data Fetched from API</h1>
-        {/* Do not remove the main div */}
+       
          <pre style={{maxWidth:'100vw'}} >{JSON.stringify(data,null,1 )}</pre>
+         </div>
+         }
     </div>
   )
 }
